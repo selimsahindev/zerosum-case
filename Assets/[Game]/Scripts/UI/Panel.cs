@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(CanvasGroup))]
 public abstract class Panel : MonoBehaviour
@@ -16,16 +17,19 @@ public abstract class Panel : MonoBehaviour
         gameObject.SetActive(isActive);
     }
 
-    public void ActiveSmooth(bool isActive, float duration = 0.5f)
+    public void ActiveSmooth(bool isActive, float duration = 0.5f, UnityAction onComplete = null)
     {
         if (isActive)
         {
             gameObject.SetActive(true);
-            group.DOFade(1f, duration);
+            group.DOFade(1f, duration).OnComplete(() => onComplete?.Invoke());
         }
         else
         {
-            group.DOFade(0f, duration).OnComplete(() => gameObject.SetActive(false));
+            group.DOFade(0f, duration).OnComplete(() => {
+                gameObject.SetActive(false);
+                onComplete?.Invoke();
+            });
         }
     }
 }

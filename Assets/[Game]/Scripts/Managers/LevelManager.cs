@@ -49,8 +49,10 @@ public class LevelManager : MonoBehaviour
 
     public bool ReloadScene()
     {
-        DG.Tweening.DOTween.KillAll();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        UIManager.Instance.fadePanel.ActiveSmooth(true, 0.25f, onComplete: () => {
+            DG.Tweening.DOTween.KillAll();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        });
 
         return true;
     }

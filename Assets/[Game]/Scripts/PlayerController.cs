@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float forwardSpeed = 10f;
     [SerializeField] private float sideSpeed = 20f;
     [SerializeField] private int maximumStackLimit = 3;
+    [SerializeField] private ParticleSystem windlines;
 
     private bool isMoving = false;
     private int currentStackAmount = 0;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
         stackBar = GetComponentInChildren<StackBar>();
 
         stackBar.Active(false);
+        windlines.gameObject.SetActive(false);
 
         EventManager.AddListener(EventNames.OnGameStart, HandleGameStartEvent);
         EventManager.AddListener(EventNames.OnGameOver, data => HandleGameOverEvent((bool)data));
@@ -62,6 +64,7 @@ public class PlayerController : MonoBehaviour
     {
         isMoving = false;
         stackBar.ActiveSmooth(false);
+        windlines.gameObject.SetActive(false);
         DelayManager.WaitAndInvoke(() => splineFollower.SetSpeed(0f, onComplete: () => animator.SetTrigger("Dance")), 0.1f);
     }
 
@@ -87,6 +90,16 @@ public class PlayerController : MonoBehaviour
         stackBar.SetFillAmount(stackPercentage);
 
         SetAnimatorVelocity(stackPercentage);
+
+        if (stackPercentage >= 0.5f)
+        {
+            windlines.gameObject.SetActive(true);
+            windlines.Play();
+        }
+        else
+        {
+            windlines.gameObject.SetActive(false);
+        }
     }
 
     private void SetAnimatorVelocity(float velocity, float duration = 0.25f)

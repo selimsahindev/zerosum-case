@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     public MainPanel mainPanel;
     public GamePanel gamePanel;
     public EndPanel endPanel;
+    public Panel fadePanel;
 
     #region Singleton
 
@@ -33,6 +34,9 @@ public class UIManager : MonoBehaviour
         mainPanel.Active(true);
         gamePanel.Active(false);
         endPanel.Active(false);
+
+        fadePanel.Active(true);
+        fadePanel.ActiveSmooth(false);
 
         EventManager.AddListener(EventNames.OnGameStart, OnGameStart);
         EventManager.AddListener(EventNames.OnGameOver, data => OnGameOver((bool)data));
