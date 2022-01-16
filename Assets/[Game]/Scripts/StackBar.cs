@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class StackBar : MonoBehaviour
+public class StackBar : Panel
 {
     [SerializeField] private Image fillImage;
 

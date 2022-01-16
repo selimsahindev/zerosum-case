@@ -33,7 +33,8 @@ public class LevelManager : MonoBehaviour
 
     private void Construct()
     {
-        int levelIndex = DataManager.Instance.Level;
+        // This line contains additional operations for the level loop
+        int levelIndex = (DataManager.Instance.Level % Resources.LoadAll<Level>("Levels").Length) + 1;
 
         if (playLevel != -1)
         {
@@ -67,6 +68,7 @@ public class LevelManager : MonoBehaviour
         // Save collected currencies if the game is completed successfully.
         if (success)
         {
+            DataManager.Instance.SetLevel(DataManager.Instance.Level + 1);
             DataManager.Instance.SetCurrency(DataManager.Instance.Currency + currencyCollected);
         }
     }

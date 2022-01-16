@@ -35,11 +35,18 @@ public class UIManager : MonoBehaviour
         endPanel.Active(false);
 
         EventManager.AddListener(EventNames.OnGameStart, OnGameStart);
+        EventManager.AddListener(EventNames.OnGameOver, data => OnGameOver((bool)data));
     }
 
     private void OnGameStart()
     {
         mainPanel.ActiveSmooth(false);
         gamePanel.ActiveSmooth(true);
+    }
+
+    private void OnGameOver(bool success)
+    {
+        gamePanel.ActiveSmooth(false);
+        endPanel.ActiveSmooth(true);
     }
 }

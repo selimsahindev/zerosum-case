@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
         splineFollower = GetComponentInParent<CustomSplineFollower>();
         stackBar = GetComponentInChildren<StackBar>();
 
+        stackBar.Active(false);
+
         EventManager.AddListener(EventNames.OnGameStart, HandleGameStartEvent);
         EventManager.AddListener(EventNames.OnGameOver, data => HandleGameOverEvent((bool)data));
         EventManager.AddListener(EventNames.OnCollectableInteraction, data => HandleCollectableInteraction((Collectable)data));
@@ -42,7 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 pos = transform.localPosition;
 
-        pos = Vector3.Lerp(pos, pos + transform.right * InputManager.Instance.Input.x * sideSpeed, Time.deltaTime);
+        pos = Vector3.Lerp(pos, pos + Vector3.right * InputManager.Instance.Input.x * sideSpeed, Time.deltaTime);
         pos.x = Mathf.Clamp(pos.x, -xBounds, xBounds);
 
         transform.localPosition = pos;
@@ -53,18 +55,19 @@ public class PlayerController : MonoBehaviour
         isMoving = true;
         animator.SetTrigger("Run");
         splineFollower.SetSpeed(forwardSpeed);
+        stackBar.ActiveSmooth(true);
     }
 
     private void HandleGameOverEvent(bool success)
     {
-        DelayManager.WaitAndInvoke(() => splineFollower.SetSpeed(0f, onComplete: () => animator.SetTrigger("Dance")), 0.25f);
-
         isMoving = false;
+        stackBar.ActiveSmooth(false);
+        DelayManager.WaitAndInvoke(() => splineFollower.SetSpeed(0f, onComplete: () => animator.SetTrigger("Dance")), 0.1f);
     }
 
     private void HandleObstacleHit()
     {
-        SetStack(currentStackAmount - 1);
+        SetStack(currentStackAmount - 3);
     }
 
     private void HandleCollectableInteraction(Collectable collectable)
