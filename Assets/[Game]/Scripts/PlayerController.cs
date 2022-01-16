@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         EventManager.AddListener(EventNames.OnGameStart, HandleGameStartEvent);
         EventManager.AddListener(EventNames.OnGameOver, data => HandleGameOverEvent((bool)data));
         EventManager.AddListener(EventNames.OnCollectableInteraction, data => HandleCollectableInteraction((Collectable)data));
+        EventManager.AddListener(EventNames.OnObstacleHitOccured, HandleObstacleHit);
     }
 
     private void Update()
@@ -61,23 +62,38 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
     }
 
+    private void HandleObstacleHit()
+    {
+        SetStack(currentStackAmount - 1);
+    }
+
     private void HandleCollectableInteraction(Collectable collectable)
     {
         if (collectable.Type == Collectable.CollectableType.Stack)
         {
-            currentStackAmount++;
-
-            float stackPercentage = maximumStackLimit == 0f ? 0f : currentStackAmount / maximumStackLimit;
-
-            stackBar.SetFillAmount(stackPercentage);
-
-            SetAnimatorVelocity(stackPercentage);
+            SetStack(currentStackAmount + 1);
         }
+    }
+
+    private void SetStack(int stack)
+    {
+        currentStackAmount = Mathf.Clamp(stack, 0, maximumStackLimit);
+
+        float stackPercentage = maximumStackLimit == 0f ? 0f : (float)currentStackAmount / maximumStackLimit;
+
+        stackBar.SetFillAmount(stackPercentage);
+
+        SetAnimatorVelocity(stackPercentage);
     }
 
     private void SetAnimatorVelocity(float velocity, float duration = 0.25f)
     {
+        float currentVelocity = animator.GetFloat("Velocity");
+
         animatorTween.Kill();
-        animatorTween = DOTween.To(() => animator.GetFloat("Velocity"), val => animator.SetFloat("Velocity", val), velocity, duration);
+        animatorTween = DOTween.To(() => currentVelocity, val => {
+            currentVelocity = val;
+            animator.SetFloat("Velocity", val);
+        }, velocity, duration);
     }
 }

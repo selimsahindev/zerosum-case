@@ -18,7 +18,7 @@ public class Collectable : MonoBehaviour
 
     private void Awake()
     {
-        mesh.DORotate(Vector3.up * 360f, 1.6f, RotateMode.LocalAxisAdd).SetLoops(-1);
+        mesh.DOLocalRotate(Vector3.up * 360f, 1.6f, RotateMode.LocalAxisAdd).SetLoops(-1);
     }
 
     private void Disappear()
