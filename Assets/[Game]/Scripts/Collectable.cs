@@ -26,6 +26,15 @@ public class Collectable : MonoBehaviour
         GetComponent<Collider>().enabled = false;
         mesh.DOKill();
         mesh.DOScale(0f, 0.25f).OnComplete(() => Destroy(gameObject));
+
+        if (type == CollectableType.Currency)
+        {
+            ParticleSystem particle = Instantiate(LevelManager.Instance.coinSplashPrefab);
+            particle.transform.position = mesh.transform.position;
+            particle.transform.localScale = Vector3.one * 0.2f;
+            particle.Play();
+            Destroy(particle, particle.main.duration);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

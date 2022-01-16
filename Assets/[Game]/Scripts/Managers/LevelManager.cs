@@ -11,6 +11,9 @@ public class LevelManager : MonoBehaviour
 
     public Level level { get; private set; }
 
+    // This can be stored in a more specific area like "Resource Manager". But for the sake of simplicity I wrote it here.
+    [HideInInspector] public ParticleSystem coinSplashPrefab;
+
     private int currencyCollected = 0;
 
     #region Singleton
@@ -33,6 +36,8 @@ public class LevelManager : MonoBehaviour
 
     private void Construct()
     {
+        coinSplashPrefab = Resources.Load<ParticleSystem>("Particles/VFX_Coins_Splash");
+
         // This line contains additional operations for the level loop
         int levelIndex = (DataManager.Instance.Level % Resources.LoadAll<Level>("Levels").Length) + 1;
 
