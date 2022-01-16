@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
     public Level level { get; private set; }
 
     // This can be stored in a more specific area like "Resource Manager". But for the sake of simplicity I wrote it here.
-    [HideInInspector] public ParticleSystem coinSplashPrefab;
+    [HideInInspector] public ObjectPool<ParticleSystem> coinSplashParticlePool;
 
     private int currencyCollected = 0;
 
@@ -36,7 +36,7 @@ public class LevelManager : MonoBehaviour
 
     private void Construct()
     {
-        coinSplashPrefab = Resources.Load<ParticleSystem>("Particles/VFX_Coins_Splash");
+        CreateObjectPoolForParticles();
 
         // This line contains additional operations for the level loop
         int levelIndex = (DataManager.Instance.Level % Resources.LoadAll<Level>("Levels").Length) + 1;
@@ -60,6 +60,22 @@ public class LevelManager : MonoBehaviour
         });
 
         return true;
+    }
+
+    private void CreateObjectPoolForParticles()
+    {
+        ParticleSystem coinSplashPrefab = Resources.Load<ParticleSystem>("Particles/VFX_Coins_Splash");
+
+        GameObject coinSplashPool = new GameObject("CoinSplashPool");
+
+        coinSplashParticlePool = new ObjectPool<ParticleSystem>(100, () => {
+            return Instantiate(coinSplashPrefab, coinSplashPool.transform);
+        }, pushItem => {
+            pushItem.gameObject.SetActive(false);
+            pushItem.Stop();
+        }, popItem => {
+            popItem.gameObject.SetActive(true);
+        });
     }
 
     private void HandleCollectableInteraction(Collectable collectable)

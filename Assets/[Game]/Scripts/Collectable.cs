@@ -29,11 +29,15 @@ public class Collectable : MonoBehaviour
 
         if (type == CollectableType.Currency)
         {
-            ParticleSystem particle = Instantiate(LevelManager.Instance.coinSplashPrefab);
+            ParticleSystem particle = LevelManager.Instance.coinSplashParticlePool.Pop();
             particle.transform.position = mesh.transform.position;
             particle.transform.localScale = Vector3.one * 0.2f;
             particle.Play();
-            Destroy(particle, particle.main.duration);
+
+            // Recycle the object
+            DelayManager.WaitAndInvoke(() => {
+                LevelManager.Instance.coinSplashParticlePool.Push(particle);
+            }, particle.main.duration);
         }
     }
 
