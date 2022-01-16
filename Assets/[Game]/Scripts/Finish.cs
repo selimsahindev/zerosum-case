@@ -8,10 +8,16 @@ public class Finish : MonoBehaviour
 {
     [SerializeField] private SplineComputer spline;
     [SerializeField] private float distanceFromEnd = 10f;
+    [SerializeField] private ParticleSystem[] confettiRainbows;
 
     private void Awake()
     {
         AlignToSpline();
+
+        for (int i = 0; i < confettiRainbows.Length; i++)
+        {
+            confettiRainbows[i].gameObject.SetActive(false);
+        }
     }
 
     private void AlignToSpline()
@@ -33,6 +39,12 @@ public class Finish : MonoBehaviour
         {
             GetComponent<Collider>().enabled = false;
             EventManager.NotifyListeners(EventNames.OnGameOver, true);
+
+            for (int i = 0; i < confettiRainbows.Length; i++)
+            {
+                confettiRainbows[i].gameObject.SetActive(true);
+                confettiRainbows[i].Play();
+            }
         }
     }
 }
