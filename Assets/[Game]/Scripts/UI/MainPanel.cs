@@ -18,7 +18,7 @@ public class MainPanel : Panel
         tapToPlayText.transform.DOScale(1.05f, 1f).SetLoops(-1, LoopType.Yoyo);
 
         SetCurrentLevelText(DataManager.Instance.Level);
-        SetCoinText(DataManager.Instance.Coin);
+        SetCoinText(DataManager.Instance.Currency);
     }
 
     private void OnTapToPlayButtonClicked()

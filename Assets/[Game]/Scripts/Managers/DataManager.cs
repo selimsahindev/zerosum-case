@@ -3,10 +3,10 @@ using UnityEngine;
 public class DataManager : MonoBehaviour
 {
     private readonly string LEVEL_DATA = "level_data";
-    private readonly string COIN_DATA = "coin_data";
+    private readonly string CURRENCY_DATA = "currency_data";
 
     public int Level { get; private set; }
-    public int Coin { get; private set; }
+    public int Currency { get; private set; }
 
     #region Singleton
     private static DataManager instance;
@@ -32,7 +32,7 @@ public class DataManager : MonoBehaviour
     private void GetData()
     {
         Level = PlayerPrefs.GetInt(LEVEL_DATA, 1);
-        Coin = PlayerPrefs.GetInt(COIN_DATA, 0);
+        Currency = PlayerPrefs.GetInt(CURRENCY_DATA, 0);
     }
 
     public void SetLevel(int _level)
@@ -42,10 +42,10 @@ public class DataManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void SetCoin(int _coin)
+    public void SetCurrency(int _coin)
     {
-        Coin = _coin;
-        PlayerPrefs.SetInt(COIN_DATA, Coin);
+        Currency = _coin;
+        PlayerPrefs.SetInt(CURRENCY_DATA, Currency);
         PlayerPrefs.Save();
     }
 }

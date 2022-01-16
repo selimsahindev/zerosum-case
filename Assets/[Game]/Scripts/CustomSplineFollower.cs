@@ -26,9 +26,11 @@ public class CustomSplineFollower : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, ss.rotation.eulerAngles.y, ss.rotation.eulerAngles.z); ;
     }
 
-    public void SetSpeed(float speed, float duration = 0.25f)
+    public void SetSpeed(float speed, float duration = 0.25f, UnityEngine.Events.UnityAction onComplete = null)
     {
         speedChangeTween.Kill();
-        speedChangeTween = DOTween.To(() => this.speed, val => this.speed = val, speed, duration);
+        speedChangeTween = DOTween.To(() => this.speed, val => this.speed = val, speed, duration).OnComplete(() => {
+            onComplete?.Invoke();
+        });
     }
 }

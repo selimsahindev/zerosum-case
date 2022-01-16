@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float forwardSpeed = 10f;
     [SerializeField] private float sideSpeed = 20f;
 
+    private bool isMoving = false;
     private Animator animator;
     private CustomSplineFollower splineFollower;
 
@@ -17,18 +18,30 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         splineFollower = GetComponentInParent<CustomSplineFollower>();
 
-        EventManager.AddListener(EventNames.OnGameStart, OnGameStart);
+        EventManager.AddListener(EventNames.OnGameStart, HandleGameStartEvent);
+        EventManager.AddListener(EventNames.OnGameOver, data => HandleGameOverEvent((bool)data));
     }
 
     private void Update()
     {
-        HandleMovement();
+        if (isMoving)
+        {
+            HandleMovement();
+        }
     }
 
-    private void OnGameStart()
+    private void HandleGameStartEvent()
     {
+        isMoving = true;
         animator.SetTrigger("Run");
         splineFollower.SetSpeed(forwardSpeed);
+    }
+
+    private void HandleGameOverEvent(bool success)
+    {
+        DelayManager.WaitAndInvoke(() => splineFollower.SetSpeed(0f, onComplete: () => animator.SetTrigger("Dance")), 0.25f);
+
+        isMoving = false;
     }
 
     private void HandleMovement()
