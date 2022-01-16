@@ -15,6 +15,7 @@ public class Collectable : MonoBehaviour
     public int Value => value;
 
     [SerializeField] private Transform mesh;
+    private PlayerController player;
 
     private void Awake()
     {
@@ -23,9 +24,14 @@ public class Collectable : MonoBehaviour
 
     private void Disappear()
     {
+        float duration = 0.45f;
+
         GetComponent<Collider>().enabled = false;
+
         mesh.DOKill();
-        mesh.DOScale(0f, 0.25f).OnComplete(() => Destroy(gameObject));
+        Sequence seq = DOTween.Sequence();
+        seq.Append(mesh.DOScale(0f, duration));
+        seq.OnComplete(() => Destroy(gameObject));
 
         if (type == CollectableType.Currency)
         {
@@ -39,6 +45,15 @@ public class Collectable : MonoBehaviour
                 LevelManager.Instance.coinSplashParticlePool.Push(particle);
             }, particle.main.duration);
         }
+        else if (type == CollectableType.Stack)
+        {
+            transform.SetParent(player.transform);
+            //seq.Join(mesh.DOLocalMove(Vector3.up * 3.5f + Vector3.left * 1.25f, duration));
+            seq.Join(mesh.DOLocalMove(player.stackBar.diamondImage.transform.position - player.transform.position, duration));
+        }
+
+        seq.SetEase(Ease.InCirc);
+        seq.Play();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -46,6 +61,7 @@ public class Collectable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             EventManager.NotifyListeners(EventNames.OnCollectableInteraction, this);
+            player = other.GetComponent<PlayerController>();
             Disappear();
         }
     }

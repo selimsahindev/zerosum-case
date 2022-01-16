@@ -6,6 +6,8 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
+    public StackBar stackBar { get; private set; }
+
     [SerializeField] private float xBounds = 2f;
     [SerializeField] private float forwardSpeed = 10f;
     [SerializeField] private float sideSpeed = 20f;
@@ -16,7 +18,6 @@ public class PlayerController : MonoBehaviour
     private int currentStackAmount = 0;
     private Animator animator;
     private CustomSplineFollower splineFollower;
-    private StackBar stackBar;
     private Tween animatorTween;
     private ParticleSystem cuteEmojiPrefab;
 
@@ -98,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
         SetAnimatorVelocity(stackPercentage);
 
-        if (stackPercentage >= 0.5f)
+        if (stackPercentage >= 0.7f)
         {
             windlines.gameObject.SetActive(true);
             windlines.Play();

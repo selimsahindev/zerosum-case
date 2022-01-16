@@ -912,7 +912,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playLevel: -1
-  coinSplashPrefab: {fileID: 0}
 --- !u!1 &626508424
 GameObject:
   m_ObjectHideFlags: 0
