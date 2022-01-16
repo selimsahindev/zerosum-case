@@ -18,12 +18,14 @@ public class PlayerController : MonoBehaviour
     private CustomSplineFollower splineFollower;
     private StackBar stackBar;
     private Tween animatorTween;
+    private ParticleSystem cuteEmojiPrefab;
 
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
         splineFollower = GetComponentInParent<CustomSplineFollower>();
         stackBar = GetComponentInChildren<StackBar>();
+        cuteEmojiPrefab = Resources.Load<ParticleSystem>("Particles/EmojiCute");
 
         stackBar.Active(false);
         windlines.gameObject.SetActive(false);
@@ -65,6 +67,11 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
         stackBar.ActiveSmooth(false);
         windlines.gameObject.SetActive(false);
+
+        ParticleSystem emoji = Instantiate(cuteEmojiPrefab, transform);
+        emoji.transform.localPosition = Vector3.up * 3.5f;
+        emoji.Play();
+
         DelayManager.WaitAndInvoke(() => splineFollower.SetSpeed(0f, onComplete: () => animator.SetTrigger("Dance")), 0.1f);
     }
 
